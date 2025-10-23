@@ -1,6 +1,8 @@
+from constraint import Problem, AllDifferentConstraint
 from model import *
 from parser import *
-
+from util import main as agendar_horario
+        
 if __name__ == "__main__":
     print("=" * 50)
     print("SISTEMA DE GESTÃO DE HORÁRIOS")
@@ -17,5 +19,8 @@ if __name__ == "__main__":
     if dados:
        # 3. Mostrar dados carregados
        mostrar_dados(dados)
+       print("\n" + "INICIANDO AGENDAMENTO AUTOMÁTICO")
+       print("=" * 50)
+       agendar_horario(dados)
     else:
         print("Não foi possível carregar os dados. Verifique o ficheiro dataset.txt")

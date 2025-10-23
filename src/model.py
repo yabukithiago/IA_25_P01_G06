@@ -5,6 +5,8 @@ horarios = ["09h-11h", "11h-13h", "14h-16h", "16h-18h"]
 
 BLOCOS_POR_DIA = len(horarios)
 DIAS_SEMANA = len(dias_semana)
+TOTAL_TIMESLOTS = BLOCOS_POR_DIA * DIAS_SEMANA
+BLOCKS_PER_DAY = BLOCOS_POR_DIA 
 
 problem = Problem()
 

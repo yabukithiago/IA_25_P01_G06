@@ -8,76 +8,84 @@ def ler_ficheiro(nome="dataset.txt"):
         'oc': {}    # Cursos e respetivos índices de aula
     }
     try:
-        with open(nome, "r", encoding="utf-8") as f:
-            linhas = f.readlines()
-        seccao_atual = None
+        with open(nome, 'r', encoding='utf-8') as ficheiro:
+            linhas = ficheiro.readlines()
+
+        secao_atual = None
 
         for linha in linhas:
             linha = linha.strip()
 
-            # Ignora linhas vazias
+            # Ignorar linhas vazias
             if not linha:
                 continue
 
-            # Detecta secções
-            if linha.startswith("#cc"):
-                seccao_atual = 'cc'
+            # Detetar secções
+            if linha.startswith('#cc'):
+                secao_atual = 'cc'
                 continue
-            elif linha.startswith("#olw"):
-                seccao_atual = 'olw'
+            elif linha.startswith('#olw'):
+                secao_atual = 'olw'
                 continue
-            elif linha.startswith("#dsd"):
-                seccao_atual = 'dsd'
+            elif linha.startswith('#dsd'):
+                secao_atual = 'dsd'
                 continue
-            elif linha.startswith("#tr"):
-                seccao_atual = 'tr'
+            elif linha.startswith('#tr'):
+                secao_atual = 'tr'
                 continue
-            elif linha.startswith("#rr"):
-                seccao_atual = 'rr'
+            elif linha.startswith('#rr'):
+                secao_atual = 'rr'
                 continue
-            elif linha.startswith("#oc"):
-                seccao_atual = 'oc'
+            elif linha.startswith('#oc'):
+                secao_atual = 'oc'
                 continue
-            elif linha.startswith("#head"):
-                seccao_atual = None
+            elif linha.startswith('#head'):
+                secao_atual = None
                 continue
 
             # Processar dados baseado na secção atual
-            if seccao_atual == 'cc':
+            if secao_atual == 'cc':
                 partes = linha.split()
                 if partes:
-                    turma, cursos = partes[0], partes[1:]
+                    turma = partes[0]
+                    cursos = partes[1:]
                     dados['cc'][turma] = cursos
 
-            elif seccao_atual == 'olw':
-                # No dataset está vazio, mas processará caso existam dados
+            elif secao_atual == 'olw':
+                # No exemplo está vazio, mas processamos caso existam dados
                 if linha and not linha.startswith('#'):
-                    dados['olw'].append(linha.strip())
+                    cursos = linha.split()
+                    dados['olw'].extend(cursos)
 
-            elif seccao_atual == 'dsd':
+            elif secao_atual == 'dsd':
                 partes = linha.split()
                 if partes:
-                    professor, curso = partes[0], partes[1]
-                    dados['dsd'][professor] = curso
+                    professor = partes[0]
+                    cursos = partes[1:]
+                    dados['dsd'][professor] = cursos
 
-            elif seccao_atual == 'tr':
+            elif secao_atual == 'tr':
                 partes = linha.split()
                 if partes:
                     professor = partes[0]
                     slots = list(map(int, partes[1:]))
                     dados['tr'][professor] = slots
 
-            elif seccao_atual == 'rr':
+            elif secao_atual == 'rr':
                 partes = linha.split()
                 if len(partes) >= 2:
-                    curso, sala = partes[0], partes[1]
+                    curso = partes[0]
+                    sala = partes[1]
                     dados['rr'][curso] = sala
 
-            elif seccao_atual == 'oc':
+            elif secao_atual == 'oc':
                 partes = linha.split()
                 if len(partes) >= 2:
-                    curso, indice_aula = partes[0], int(partes[1])  
+                    curso = partes[0]
+                    indice_aula = int(partes[1])
                     dados['oc'][curso] = indice_aula
+
+        print(f"✅ Ficheiro '{ficheiro}' lido com sucesso!")
         return dados
     
     except FileNotFoundError:
