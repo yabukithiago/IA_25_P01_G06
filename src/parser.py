@@ -11,7 +11,7 @@ def ler_ficheiro(nome="dataset.txt"):
         with open(nome, 'r', encoding='utf-8') as ficheiro:
             linhas = ficheiro.readlines()
 
-        secao_atual = None
+        seccao_atual = None
 
         for linha in linhas:
             linha = linha.strip()
@@ -22,63 +22,63 @@ def ler_ficheiro(nome="dataset.txt"):
 
             # Detetar secções
             if linha.startswith('#cc'):
-                secao_atual = 'cc'
+                seccao_atual = 'cc'
                 continue
             elif linha.startswith('#olw'):
-                secao_atual = 'olw'
+                seccao_atual = 'olw'
                 continue
             elif linha.startswith('#dsd'):
-                secao_atual = 'dsd'
+                seccao_atual = 'dsd'
                 continue
             elif linha.startswith('#tr'):
-                secao_atual = 'tr'
+                seccao_atual = 'tr'
                 continue
             elif linha.startswith('#rr'):
-                secao_atual = 'rr'
+                seccao_atual = 'rr'
                 continue
             elif linha.startswith('#oc'):
-                secao_atual = 'oc'
+                seccao_atual = 'oc'
                 continue
             elif linha.startswith('#head'):
-                secao_atual = None
+                seccao_atual = None
                 continue
 
             # Processar dados baseado na secção atual
-            if secao_atual == 'cc':
+            if seccao_atual == 'cc':
                 partes = linha.split()
                 if partes:
                     turma = partes[0]
                     cursos = partes[1:]
                     dados['cc'][turma] = cursos
 
-            elif secao_atual == 'olw':
+            elif seccao_atual == 'olw':
                 # No exemplo está vazio, mas processamos caso existam dados
                 if linha and not linha.startswith('#'):
                     cursos = linha.split()
                     dados['olw'].extend(cursos)
 
-            elif secao_atual == 'dsd':
+            elif seccao_atual == 'dsd':
                 partes = linha.split()
                 if partes:
                     professor = partes[0]
                     cursos = partes[1:]
                     dados['dsd'][professor] = cursos
 
-            elif secao_atual == 'tr':
+            elif seccao_atual == 'tr':
                 partes = linha.split()
                 if partes:
                     professor = partes[0]
                     slots = list(map(int, partes[1:]))
                     dados['tr'][professor] = slots
 
-            elif secao_atual == 'rr':
+            elif seccao_atual == 'rr':
                 partes = linha.split()
                 if len(partes) >= 2:
                     curso = partes[0]
                     sala = partes[1]
                     dados['rr'][curso] = sala
 
-            elif secao_atual == 'oc':
+            elif seccao_atual == 'oc':
                 partes = linha.split()
                 if len(partes) >= 2:
                     curso = partes[0]

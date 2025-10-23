@@ -8,8 +8,6 @@ DIAS_SEMANA = len(dias_semana)
 TOTAL_TIMESLOTS = BLOCOS_POR_DIA * DIAS_SEMANA
 BLOCKS_PER_DAY = BLOCOS_POR_DIA 
 
-problem = Problem()
-
 def criar_quadro():
     quadro = []
     for i in range(BLOCOS_POR_DIA):

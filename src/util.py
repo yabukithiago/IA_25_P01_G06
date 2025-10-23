@@ -33,7 +33,7 @@ def atribuir_aulas_ao_horario(dados):
                 problem.addVariable(var_name, dominio_timeslots)
                 variables.append(var_name)
 
-    print(f"📊 Total de aulas para agendar: {len(variables)}")
+    print(f"Total de aulas para agendar: {len(variables)}")
 
     #RESTRIÇOES(HARD_CONSTRAINS)
     #Aulas Diferentes por Turma
@@ -140,12 +140,8 @@ def preencher_quadro_com_solucao(quadro, solution, dados):
 
         #print(f"DEBUG: {var_name} = timeslot {timeslot}")
         # VERSÃO 1:
-        linha = timeslot_index // DIAS_SEMANA  # 0-3
-        coluna = timeslot_index % DIAS_SEMANA  # 0-4
-
-        # VERSÃO 2 (alternativa):
-        # linha = timeslot_index % BLOCOS_POR_DIA     # 0-3
-        # coluna = timeslot_index // BLOCOS_POR_DIA   # 0-4
+        linha = timeslot_index % BLOCOS_POR_DIA  # 0-3
+        coluna = timeslot_index // BLOCOS_POR_DIA  # 0-4
 
         sala = dados['rr'].get(curso, f"Room{turma[-1]}")
         aula_info = {'turma': turma, 'curso': curso, 'sala': sala}
