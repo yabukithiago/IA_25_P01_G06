@@ -84,8 +84,6 @@ def ler_ficheiro(nome="dataset.txt"):
                     curso = partes[0]
                     indice_aula = int(partes[1])
                     dados['oc'][curso] = indice_aula
-
-        print(f"✅ Ficheiro '{ficheiro}' lido com sucesso!")
         return dados
     
     except FileNotFoundError:
@@ -100,46 +98,46 @@ def mostrar_dados(dados):
         print("Nenhum dado para mostrar!")
         return
 
-    # Mostrar cursos por turma (cc)
-    print("\nCURSOS POR TURMA (#cc):")
-    print("-" * 40)
-    for turma, cursos in dados['cc'].items():
-        print(f"{turma}: {', '.join(cursos)}")
-    print("=" * 50)
+    # # Mostrar cursos por turma (cc)
+    # print("\nCURSOS POR TURMA (#cc):")
+    # print("-" * 40)
+    # for turma, cursos in dados['cc'].items():
+    #     print(f"{turma}: {', '.join(cursos)}")
+    # print("=" * 50)
 
-    # Mostrar cursos com uma aula por semana (olw)
-    print(f"\nCURSOS COM UMA AULA POR SEMANA (#olw):")
-    print("-" * 40)
-    if dados['olw']:
-        print(', '.join(dados['olw']))
-    else:
-        print("Nenhum curso com uma aula por semana")
-    print("=" * 50)
+    # # Mostrar cursos com uma aula por semana (olw)
+    # print(f"\nCURSOS COM UMA AULA POR SEMANA (#olw):")
+    # print("-" * 40)
+    # if dados['olw']:
+    #     print(', '.join(dados['olw']))
+    # else:
+    #     print("Nenhum curso com uma aula por semana")
+    # print("=" * 50)
 
-    # Mostrar cursos por professor (dsd)
-    print("\nCURSOS POR PROFESSOR (#dsd):")
-    print("-" * 40)
-    for professor, cursos in dados['dsd'].items():
-        print(f"{professor}: {', '.join(cursos)}")
-    print("=" * 50)
+    # # Mostrar cursos por professor (dsd)
+    # print("\nCURSOS POR PROFESSOR (#dsd):")
+    # print("-" * 40)
+    # for professor, cursos in dados['dsd'].items():
+    #     print(f"{professor}: {', '.join(cursos)}")
+    # print("=" * 50)
 
-    # Mostrar restrições de horário (tr)
-    print("\nRESTRIÇÕES DE HORÁRIO DOS PROFESSORES (#tr):")
-    print("-" * 40)
-    for professor, slots in dados['tr'].items():
-        slots_str = ', '.join(map(str, slots))
-        print(f"{professor}: slots {slots_str}")
-    print("=" * 50)
+    # # Mostrar restrições de horário (tr)
+    # print("\nRESTRIÇÕES DE HORÁRIO DOS PROFESSORES (#tr):")
+    # print("-" * 40)
+    # for professor, slots in dados['tr'].items():
+    #     slots_str = ', '.join(map(str, slots))
+    #     print(f"{professor}: slots {slots_str}")
+    # print("=" * 50)
 
-    # Mostrar restrições de sala (rr)
-    print("\nRESTRIÇÕES DE SALA (#rr):")
-    print("-" * 40)
-    for curso, sala in dados['rr'].items():
-        print(f"{curso}: {sala}")
+    # # Mostrar restrições de sala (rr)
+    # print("\nRESTRIÇÕES DE SALA (#rr):")
+    # print("-" * 40)
+    # for curso, sala in dados['rr'].items():
+    #     print(f"{curso}: {sala}")
 
-    print("=" * 50)
-    # Mostrar aulas online (oc)
-    print("\nAULAS ONLINE (#oc):")
-    print("-" * 40)
-    for curso, indice in dados['oc'].items():
-        print(f"{curso}: aula {indice} é online")
+    # print("=" * 50)
+    # # Mostrar aulas online (oc)
+    # print("\nAULAS ONLINE (#oc):")
+    # print("-" * 40)
+    # for curso, indice in dados['oc'].items():
+    #     print(f"{curso}: aula {indice} é online")

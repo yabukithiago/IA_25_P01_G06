@@ -2,7 +2,7 @@ from constraint import Problem, AllDifferentConstraint
 from model import *
 
 def criar_quadro_horario_com_aulas():
-    """Cria quadro horário vazio com estrutura para aulas"""
+    # Cria um quadro horário com a estrutura para as aulas
     quadro = []
     for i in range(BLOCOS_POR_DIA):
         linha = []
@@ -20,12 +20,12 @@ def criar_quadro_horario_com_aulas():
 
 
 def atribuir_aulas_ao_horario(dados):
-    """Atribui aulas respeitando restrições"""
+    # Atribui aulas seguindo e respeitando restrições
     problem = Problem()
     variables = []
     dominio_timeslots = list(range(1, TOTAL_TIMESLOTS + 1))
 
-    # Criar variáveis
+    # Cria variáveis
     for turma, cursos in dados['cc'].items():
         for curso in cursos:
             for aula_index in [1, 2]:
@@ -35,13 +35,14 @@ def atribuir_aulas_ao_horario(dados):
 
     print(f"Total de aulas para agendar: {len(variables)}")
 
-    #RESTRIÇOES(HARD_CONSTRAINS)
-    #Aulas Diferentes por Turma
+    # RESTRIÇÕES (HARD CONSTRAINTS)
+    
+    # Aulas diferentes por turma (ALLDIFF)
     for turma in dados['cc'].keys():
         turma_vars = [var for var in variables if var.startswith(f"{turma}_")]
         problem.addConstraint(AllDifferentConstraint(), turma_vars)
 
-    #Professor Não Pode Dar 2 Aulas Simultâneas
+    # Docente não pode dar duas aulas ao mesmo tempo
     for professor, cursos_prof in dados['dsd'].items():
         professor_vars = []
         for var_name in variables:
@@ -51,7 +52,7 @@ def atribuir_aulas_ao_horario(dados):
         if professor_vars:
             problem.addConstraint(AllDifferentConstraint(), professor_vars)
 
-    #Restrições de Disponibilidade do Professor
+    # Restrições de disponibilidade do Docente
     for professor, slots_indisponiveis in dados['tr'].items():
         cursos_prof = dados['dsd'][professor]
         for var_name in variables:
@@ -60,9 +61,9 @@ def atribuir_aulas_ao_horario(dados):
                 def professor_disponivel(timeslot, indisponiveis=slots_indisponiveis):
                     return timeslot not in indisponiveis
 
-                problem.addConstraint(professor_disponivel, [var_name]) # TO DO - Não está a funcionar
+                problem.addConstraint(professor_disponivel, [var_name])
 
-    #Máximo 3 Aulas por Dia por Turma
+    # Máximo 3 aulas por dia por turma
     for turma in dados['cc'].keys():
         turma_vars = [var for var in variables if var.startswith(f"{turma}_")]
 
@@ -96,7 +97,7 @@ def atribuir_aulas_ao_horario(dados):
     #         problem.addConstraint(max_3_aulas_por_dia, turma_vars)
 
 
-    #Aulas Online no Mesmo Dia
+    # Aulas online ao mesmo dia
     for curso_online in dados['oc'].keys():
         aulas_online = [var for var in variables if f"_{curso_online}_" in var]
         if len(aulas_online) >= 2:
@@ -104,20 +105,16 @@ def atribuir_aulas_ao_horario(dados):
                 dia1 = (timeslot1 - 1) // BLOCOS_POR_DIA
                 dia2 = (timeslot2 - 1) // BLOCOS_POR_DIA
                 return dia1 == dia2
-
             problem.addConstraint(aulas_online_mesmo_dia, aulas_online)
 
-            # TENTATIVA ANTERIOR
-    # for curso_online in dados['oc'].keys():
-    #     aulas_online = [var for var in variables if f"_{curso_online}_" in var]
-    #     if len(aulas_online) >= 2:
-    #         def aulas_online_mesmo_dia(timeslot1, timeslot2):
-    #             dia1 = (timeslot1 - 1) // BLOCKS_PER_DAY
-    #             dia2 = (timeslot2 - 1) // BLOCKS_PER_DAY
-    #             return dia1 == dia2
-    #
-    #         problem.addConstraint(aulas_online_mesmo_dia, aulas_online)
-
+    # for curso, aula_online_index in dados['oc'].items():
+    #         aulas_curso = [var for var in variables if f"_{curso}_" in var]
+    #         if len(aulas_curso) >= 2:
+    #             def aulas_mesmo_dia(*timeslots):
+    #                 dias = [(ts - 1) // BLOCOS_POR_DIA for ts in timeslots]
+    #                 return all(dia == dias[0] for dia in dias)
+    #           problem.addConstraint(aulas_mesmo_dia, aulas_curso)
+            
     print("🔍 A resolver o problema de agendamento...")
     solution = problem.getSolution()
 
@@ -129,7 +126,7 @@ def atribuir_aulas_ao_horario(dados):
     return solution
 
 def preencher_quadro_com_solucao(quadro, solution, dados):
-    """Preenche o quadro com a solução - VERSÃO CORRIGIDA"""
+    # Preenche o quadro horário com a solução encontrada
     for var_name, timeslot in solution.items():
         partes = var_name.split('_')
         turma = partes[0]
@@ -137,9 +134,6 @@ def preencher_quadro_com_solucao(quadro, solution, dados):
 
         timeslot_index = timeslot - 1
 
-
-        #print(f"DEBUG: {var_name} = timeslot {timeslot}")
-        # VERSÃO 1:
         linha = timeslot_index % BLOCOS_POR_DIA  # 0-3
         coluna = timeslot_index // BLOCOS_POR_DIA  # 0-4
 
@@ -151,7 +145,7 @@ def preencher_quadro_com_solucao(quadro, solution, dados):
 
 
 def visualizar_horario_por_turma(quadro_geral, dados):
-    """Mostra horário separado para cada turma"""
+    # Mostra horário de cada turma
     for turma in dados['cc'].keys():
         print(f"\n" + "=" * 80)
         print(f"HORÁRIO DA TURMA {turma}")
@@ -182,9 +176,7 @@ def visualizar_horario_por_turma(quadro_geral, dados):
 
 
 def verificar_restricoes(quadro, dados):
-    """
-    Verifica manualmente se todas as restrições estão a ser cumpridas
-    """
+    # Verifica se todas as restrições foram cumpridas
     print("\n" + "🔍 VERIFICAÇÃO DE RESTRIÇÕES")
     print("=" * 50)
 
@@ -197,7 +189,7 @@ def verificar_restricoes(quadro, dados):
             professores_na_celula = {}
 
             for aula in celula['aulas']:
-                # Encontrar professor desta aula
+                # Busca o professor da aula atribuída
                 professor = None
                 for prof, cursos in dados['dsd'].items():
                     if aula['curso'] in cursos:
@@ -213,7 +205,6 @@ def verificar_restricoes(quadro, dados):
     # Verificar restrições de horário do professor
     for professor, slots_proibidos in dados['tr'].items():
         for timeslot_proibido in slots_proibidos:
-            # Converter timeslot para coordenadas
             coluna = (timeslot_proibido - 1) // BLOCOS_POR_DIA
             linha = (timeslot_proibido - 1) % BLOCOS_POR_DIA
 
@@ -236,7 +227,7 @@ def verificar_restricoes(quadro, dados):
             if aulas_no_dia > 3:
                 problemas.append(f"❌ Turma {turma} com {aulas_no_dia} aulas na {dias_semana[dia_idx]} (máximo: 3)")
 
-    # Mostrar resultados
+    # Apresenta resultados
     if problemas:
         print("⛔ PROBLEMAS ENCONTRADOS:")
         for problema in problemas:
@@ -248,29 +239,25 @@ def verificar_restricoes(quadro, dados):
 
        
 def main(dados):
-    """Função principal do agendamento"""
     print("INICIANDO AGENDAMENTO")
 
-    # 1. Criar quadro vazio
+    # Cria quadro vazio
     quadro = criar_quadro_horario_com_aulas()
 
-    # 2. Atribuir aulas
+    # Atribui aulas
     solution = atribuir_aulas_ao_horario(dados)
     if not solution:
         print("Não foi possível criar o horário.")
         return
 
-    # 3. Preencher quadro
+    # Preenche quadro
     quadro_preenchido = preencher_quadro_com_solucao(quadro, solution, dados)
 
-    # 4. VERIFICAR RESTRIÇÕES
+    # Verifica restrições
     todas_cumpridas = verificar_restricoes(quadro_preenchido, dados)
     print(f"\nVerificação final das restrições: {'Todas cumpridas' if todas_cumpridas else 'Problemas encontrados'}")
-    
-    # 4. Mostrar horários
+
+    # Mostra horários
     print("\n" + "HORÁRIOS FINAIS")
     print("=" * 50)
     visualizar_horario_por_turma(quadro_preenchido, dados)
-
-    print("\nAgendamento concluído com sucesso!")
-    
